@@ -1,23 +1,41 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package control;
 
 /**
- *
- * @author henrikorpela
+ * Base class for controller commands.
+ * @author Henri Korpela
  */
 public abstract class Command {
+    /**
+     * Array that contains parameters for specific command.
+     */
     protected final String params[];
+    /**
+     * Name of the command.
+     */
     protected final String call;
+    /**
+     * Controller that owns the command.
+     */
+    protected Controller master;
     
-    public Command(String command, String params[])
+    /**
+     * Creates new command.
+     * @param command 
+     * @param params
+     * @param master 
+     */
+    public Command(String command, String params[], Controller master)
     {
         this.call = command;
         this.params = params;
+        this.master = master;
     }
     
+    /**
+     * Execute specific command. Each command implements its own.
+     * @param command Command that is executed.
+     */
     public abstract void execute_command(String command);
     
     public boolean is_call(String command)
@@ -28,7 +46,7 @@ public abstract class Command {
     
     protected String syntax(String params)
     {
-        if(params.charAt(0) != '(' || params.charAt(params.length() - 1) != ')')
+        if(params.charAt(0) == '(' && params.charAt(params.length() - 1) == ')')
         {
             return params.substring(1,params.length() - 2);
         }

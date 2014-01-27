@@ -32,7 +32,7 @@ public class Binary_Tree_Test {
     
     @Before
     public void setUp() {
-        tree = new Binary_Tree();
+        tree = new Binary_Tree(new Integer_Comparator());
     }
     
     @After
@@ -44,13 +44,13 @@ public class Binary_Tree_Test {
     @Test
     public void basics() 
     {
-        tree.add(1, "One");
-        tree.add(3, "Tree");
-        tree.add(5, "Five");
-        tree.add(8, "Eigth");
-        tree.add(6, "Six");
-        tree.add(2, "Two");
-        tree.add(10, "Ten");
+        tree.tree_add(1, "One");
+        tree.tree_add(3, "Tree");
+        tree.tree_add(5, "Five");
+        tree.tree_add(8, "Eigth");
+        tree.tree_add(6, "Six");
+        tree.tree_add(2, "Two");
+        tree.tree_add(10, "Ten");
         
         assertEquals(tree.get(8),"Eigth");
         assertEquals(tree.get(1),"One");
@@ -69,7 +69,6 @@ public class Binary_Tree_Test {
         assertEquals(tree.get(6),"Six");
         assertEquals(tree.get(3),"Tree");
         assertEquals(tree.get(10),null);
-        
         
         assertEquals(tree.get(2),null);
         assertEquals(tree.get(6),"Six");

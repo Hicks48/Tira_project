@@ -4,8 +4,9 @@
  */
 package control;
 
-import data_structures.Queue;
+import data_structures.List;
 import java.util.Scanner;
+import tester.Tester;
 import tester.Window;
 
 /**
@@ -13,26 +14,29 @@ import tester.Window;
  * @author henrikorpela
  */
 public class Controller {
+    private int line_number;
     public boolean game_on;
-    public static int line_number;
-    private Queue<Window> wins;
+    private Tester tester;
+    private List<Window> wins;
     private Scanner reader;
     private final Command[] coms;
     
-    public Controller()
+    public Controller(Tester tester)
     {
         this.game_on = true;
         this.line_number = 0;
-        this.wins = new Queue();
+        this.wins = new List();
         this.reader = new Scanner(System.in);
         this.coms = new Command[3];
+        this.init_commands();
+        this.tester = tester;
     }
     
     public void run()
     {
         while(this.game_on)
         {
-            this.new_commmand_line(this.line_number);
+            this.new_commmand_line();
             String com = this.read_commmand();
             int com_index = this.find_command(com);
             if(com_index == -1)
@@ -48,9 +52,15 @@ public class Controller {
         this.quit();
     }
     
-    public static void new_commmand_line(int line_number)
+    public void register_window(Window win)
     {
-        System.out.print("\n" + line_number + ">>>: ");
+        this.wins.add_front(win);
+    }
+    
+    public void new_commmand_line()
+    {
+        System.out.print("\n" + this.line_number + ">>>: ");
+        this.line_number ++;
     }
     
     private String read_commmand()
@@ -77,15 +87,16 @@ public class Controller {
     
     private void init_commands()
     {
-        this.coms[0] = new Run();
-        this.coms[1] = new Register();
+        Register r = new Register(this);
+        this.coms[0] = new Run(this.tester,r,this);
+        this.coms[1] = r;
     }
     
     private void quit()
     {
-        for(int i = 0;i < this.wins.size();i ++)
+        while(!this.wins.is_empty())
         {
-            this.wins.get(i).dispose();
+            this.wins.pop_first().dispose();
         }
     }
 }

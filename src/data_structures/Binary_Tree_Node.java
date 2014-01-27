@@ -1,12 +1,9 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package data_structures;
 
 /**
  *
- * @author henrikorpela
+ * @author Henri Korpela
  */
 public class Binary_Tree_Node<Key_Type,Value_Type> {
     public Binary_Tree_Node<Key_Type,Value_Type> left_child;

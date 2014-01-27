@@ -4,7 +4,7 @@
  */
 package control;
 
-import data_structures.Queue;
+import data_structures.List;
 import data_structures.Testable_Data_Structure;
 
 /**
@@ -12,16 +12,21 @@ import data_structures.Testable_Data_Structure;
  * @author henrikorpela
  */
 public class Register extends Command{
-    private Queue<Testable_Data_Structure> data;
+    private List<Testable_Data_Structure> data;
     
-    public Register()
+    public Register(Controller master)
     {
-        super("register",new String[1]);
+        super("register",new String[1],master);
     }
     
-    public Queue<Testable_Data_Structure> get_register()
+    public List<Testable_Data_Structure> get_register()
     {
         return this.data;
+    }
+    
+    public boolean register_empty()
+    {
+        return this.data.is_empty();
     }
     
     @Override
@@ -30,12 +35,12 @@ public class Register extends Command{
         msg = super.syntax(msg);
         if(msg == null)
         {
-            // Do error
+            Error_Handeler.print_error(super.master,"Invalid syntax");
             return;
         }
         if(!super.read_params(msg))
         {
-            // Do error
+            Error_Handeler.print_error(super.master,"Ivalid parameters");
             return;
         }
         try
@@ -46,7 +51,7 @@ public class Register extends Command{
         }
         catch(Exception e)
         {
-            Controller.new_commmand_line(Controller.line_number);
+            Error_Handeler.print_error(super.master, "Given class not found");
         }
     }
     
