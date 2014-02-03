@@ -12,12 +12,13 @@ import java.util.Comparator;
  * in performance tests. Requires that integer is used as key type.
  * List uses given objects equals and compare methods. Max, min, predecessor
  * and successor use compare method of Comparator. Comparator can be provided for the list.
+ * Accuracy of successor and predecessor depend on the accuracy of the given Comparator.
  * If comparator is not provided max, min, successor, predecessor return null. 
  * If multiple duplicates are added to the list.
  * It's not defined which duplicate methods use.
  * @author Henri Korpela
  */
-public class List<Type> implements Testable_Data_Structure<Integer,Type>, Iterator<Type> {
+public class List<Type> implements Set<Integer,Type>, Iterator<Type> {
     /**
      * First node in the list. Used to make queue operations
      * work in time O(1).

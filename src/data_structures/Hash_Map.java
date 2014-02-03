@@ -9,7 +9,7 @@ import java.util.Comparator;
  * @author Henri Korpela
  */
 public class Hash_Map<Key_Type,Value_Type> 
-implements Testable_Data_Structure<Key_Type,Value_Type>, Iterator<Key_Type> {
+implements Set<Key_Type,Value_Type>, Iterator<Key_Type> {
     private Object[] hash_table;
     private List<Key_Type> keys;
     

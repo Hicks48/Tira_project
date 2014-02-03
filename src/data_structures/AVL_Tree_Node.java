@@ -21,7 +21,7 @@ public class AVL_Tree_Node<Key_Type,Value_Type> {
     /**
      * Nodes value.
      */
-    public Value_Type value;
+    public Value_Type data;
     /**
      * Reference to nodes left child node.
      */
@@ -29,7 +29,7 @@ public class AVL_Tree_Node<Key_Type,Value_Type> {
     /**
      * Reference to nodes right child node.
      */
-    public AVL_Tree_Node<Key_Type,Value_Type> rigth_child;
+    public AVL_Tree_Node<Key_Type,Value_Type> right_child;
     /**
      * Reference to node parent node.
      */
@@ -43,7 +43,7 @@ public class AVL_Tree_Node<Key_Type,Value_Type> {
     public AVL_Tree_Node(Key_Type key, Value_Type value)
     {
         this.key = key;
-        this.value = value;
+        this.data = value;
     }
     
     /**

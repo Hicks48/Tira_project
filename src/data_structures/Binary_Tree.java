@@ -8,7 +8,7 @@ import java.util.Comparator;
  * @author Henri Korpela
  */
 public class Binary_Tree<Key_Type,Value_Type> 
-implements Testable_Data_Structure<Key_Type,Value_Type>, data_structures.Iterator<Key_Type> {
+implements Set<Key_Type,Value_Type>, data_structures.Iterator<Key_Type> {
     /**
      * Trees root node.
      */
@@ -178,6 +178,7 @@ implements Testable_Data_Structure<Key_Type,Value_Type>, data_structures.Iterato
      * @param key Key which value is retrieved.
      * @return Value corresponding given key.
      */
+    @Override
     public Value_Type get(Key_Type key)
     {
         Binary_Tree_Node<Key_Type,Value_Type> node = this.get_node(key);
@@ -192,6 +193,7 @@ implements Testable_Data_Structure<Key_Type,Value_Type>, data_structures.Iterato
      * Returns value of node which has smallest key.
      * @return Value of node that has smallest key.
      */
+    @Override
     public Value_Type min()
     {
         Binary_Tree_Node<Key_Type,Value_Type> min = this.min(this.root);
@@ -220,6 +222,7 @@ implements Testable_Data_Structure<Key_Type,Value_Type>, data_structures.Iterato
      * Return value of the node that has biggest key.
      * @return Value of node that has biggest key.
      */
+    @Override
     public Value_Type max()
     {
         Binary_Tree_Node<Key_Type,Value_Type> max = this.max(this.root);

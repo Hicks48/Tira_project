@@ -6,7 +6,7 @@ package data_structures;
  * Interface contains many basic data structure operations.
  * @author Henri Korpela
  */
-public interface Testable_Data_Structure<Key_Type, Value_Type> {
+public interface Set<Key_Type, Value_Type> {
     /**
      * Returns value that 
      * corresponds to given key.
