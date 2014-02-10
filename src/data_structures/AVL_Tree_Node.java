@@ -55,6 +55,10 @@ public class AVL_Tree_Node<Key_Type,Value_Type> {
     @Override
     public boolean equals(Object o)
     {
+        if(o == null)
+        {
+            return false;
+        }
         if(o.getClass() != this.getClass())
         {
             return false;

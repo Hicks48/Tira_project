@@ -19,6 +19,14 @@ public class Random_Numbers {
          this.add_counter = 0;
      }
      
+     public void default_ini()
+     {
+         for(int i = 0;i < this.numbers.length;i ++)
+         {
+             this.numbers[i] = i;
+         }
+     }
+     
      public int get_number(int index)
      {
          return this.numbers[index];

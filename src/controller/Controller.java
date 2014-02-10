@@ -2,9 +2,12 @@
 package controller;
 
 import algorithms.Random_Numbers;
+import data_structures.AVL_Tree;
 import data_structures.Binary_Tree;
+import data_structures.Hash_Map;
 import data_structures.List;
 import data_structures.Set;
+import java.lang.reflect.Method;
 import java.util.Scanner;
 
 /**
@@ -14,38 +17,54 @@ import java.util.Scanner;
  */
 public class Controller {
     private boolean game_on;
-    private boolean error_occured;
     private int line_number;
     private Scanner reader;
     private Set[] set_structures;
-    private String[] commands;
+    private Method methods[];
     
     public Controller()
     {
         this.game_on = true;
-        this.error_occured = false;
         this.reader = new Scanner(System.in);
-        this.set_structures = new Set[8];
-        this.commands = new String[4];
+        this.set_structures = new Set[5];
+        
+        Class clazz = Set.class;
+        this.methods = clazz.getDeclaredMethods();
+                
         this.initialize_data_structure();
     }
     
     public void run()
     {
+        this.print_welcome_message();
         String command;
         while(this.game_on)
         {
-            this.error_occured = false;
             this.print_command_line();
             command = this.ask_command();
-            this.proses_command(command);
+            this.process_com(command);
             this.line_number ++;
         }
+        this.print_goodbye_message();
+    }
+    
+    private void print_welcome_message()
+    {
+        System.out.print("---------------------------------------------\n"
+                + "Welcome to dynamic set operation tester!!! :D \n"
+                + "---------------------------------------------\n\n");
+    }
+    
+    private void print_goodbye_message()
+    {
+        System.out.print("\n----------------------------------\n"
+                + "Goodbye hope to see you again! :D"
+                + "\n----------------------------------\n");
     }
     
     private void print_command_line()
     {
-        System.out.print(this.line_number + ">>: ");
+        System.out.print(this.line_number + " >>>: ");
     }
     
     private String ask_command()
@@ -53,66 +72,35 @@ public class Controller {
         return this.reader.nextLine();
     }
     
-    private void proses_command(String command)
-    {
-        String all[] = command.split(",");
-        String call = all[0];
-        Set data_struct = this.get_struct(all[1]);
-        String params[] = all[2].split(" ");
-        
-        if(this.error_occured)
-        {
-            return;
-        }
-        
-        this.do_operation(call, data_struct, params);
-    }
-    
     private void print_error(String message)
     {
-        this.error_occured = true;
         this.print_command_line();
-        System.out.print("Error: " + message);
+        System.out.print("\tError: " + message + "\n");
     }
     
     private void initialize_data_structure()
     {
+        Integer_Comparator comparator = new Integer_Comparator();
+        
         List<Integer> list = new List();
-        list.set_comparator(new Integer_Comparator());
-        Binary_Tree<Integer,Integer> binary_tree = new Binary_Tree(new Integer_Comparator());
+        list.set_comparator(comparator);
+        
+        Hash_Map<Integer,Integer> hash_map = new Hash_Map(100);
+        hash_map.set_comparator(comparator);
+        
+        Binary_Tree<Integer,Integer> binary_tree = new Binary_Tree(comparator);
+        AVL_Tree<Integer,Integer> avl_tree = new AVL_Tree(comparator);
         
         this.set_structures[0] = list;
-        this.set_structures[1] = binary_tree;
-    }
-    
-    private void add_struct(int ammount,Set struct)
-    {   
-        Random_Numbers numbers = new Random_Numbers(ammount);
-        Timer timer = new Timer();
-        
-        for(int i = 0;i < ammount;i ++)
-        {
-            numbers.add_number(i);
-        }
-        numbers.shuffle();
-        
-        timer.start();
-        for(int i = 0;i < numbers.size();i ++)
-        {
-            struct.add(numbers.get_number(i), i);
-            if(i % 100 == 0)
-            {
-                this.print_result(Long.toString(timer.runnig_time()));
-            }
-        }
-        this.print_command_line();
-        System.out.print("total time: " + Long.toString(timer.runnig_time()));
+        this.set_structures[1] = hash_map;
+        this.set_structures[2] = binary_tree;
+        this.set_structures[3] = avl_tree;
     }
     
     private void print_result(String result)
     {
         this.print_command_line();
-        System.out.print("result: " + result);
+        System.out.print("result: " + result + "\n");
     }
     
     private Set get_struct(String struct)
@@ -120,28 +108,189 @@ public class Controller {
         switch (struct) {
             case "List":
                 return this.set_structures[0];
-            case "Binary_Tree":
+            case "Hash_Map":
                 return this.set_structures[1];
+            case "Binary_Tree":
+                return this.set_structures[2];
+            case "AVL_Tree":
+                return this.set_structures[3];
+            case "Red_Blac_Tree":
+                return this.set_structures[4];
         }
         this.print_error("Invalid data structure");
         return null;
     }
     
-    private void do_operation(String call, Set data_struct, String params[])
+    private void process_com(String com)
     {
-        switch(call)
+        if(com.equals("Available methods?"))
         {
-            case "add":
-                    try
-                    {
-                        this.add_struct(Integer.parseInt(params[0]), data_struct);
-                    }
-                    catch(Exception e)
-                    {
-                        this.print_error("Invalid parameters.");
-                        return;
-                    }
-                    break;
+            this.print_available_methods();
+            return;
         }
+        
+        if(com.equals("Available data structures?"))
+        {
+            this.print_available_data_structures();
+            return;
+        }
+        
+        if(com.equals("Quit!"))
+        {
+             this.game_on = false;
+             return;
+        }
+        
+        String splitted_com[] = com.split(" ");
+        
+        try
+        {
+            Object data_struct = this.get_struct(splitted_com[0]);
+            if(data_struct == null)
+            {
+                return;
+            }
+            Method method = this.get_method(splitted_com[1]);
+            if(method == null)
+            {
+                return;
+            }
+            Object params[] = this.collect_params(splitted_com);
+            int repeats = this.get_ammount_of_repeats(splitted_com);
+        
+            this.execute_command(repeats, method, data_struct, params);
+        }
+        catch(Exception e)
+        {
+            this.print_error("Ivalid command!!!");
+            return;
+        }
+    }
+    
+    private void print_available_methods()
+    {
+        for(int i = 0;i < this.methods.length;i ++)
+        {
+            System.out.print("\t" + this.methods[i].getName() + "\n");
+        }
+    }
+    
+    private void print_available_data_structures()
+    {
+        for(int i = 0;i < this.set_structures.length;i ++)
+        {
+            System.out.print("\t" +this.set_structures[i].getClass().getName() + "\n");
+        }
+    }
+    
+    private int get_ammount_of_repeats(String splitted_coms[])
+    {
+        return Integer.parseInt(splitted_coms[splitted_coms.length - 1]);
+    }
+    
+    private Method get_method(String name)
+    {
+        for(int i = 0;i < this.methods.length;i ++)
+        {
+            if(this.methods[i].getName().equals(name))
+            {
+                return this.methods[i];
+            }
+        }
+        this.print_error("Invalid method");
+        return null;
+    }
+    
+    private Object[] collect_params(String splitted_com[])
+    {
+        if(splitted_com.length < 3)
+        {
+            return null;
+        }
+        Object params[] = new Object[splitted_com.length - 3];
+        int n = 0;
+        for(int i = 2;i < splitted_com.length - 1;i ++)
+        {
+            params[n] = Integer.parseInt(splitted_com[i]);
+            n ++;
+        }
+        return params;
+    }
+    
+    private void execute_command(int repeats, Method method, Object data_struct, Object params[])
+    {
+        Random_Numbers default_params = null;
+        Object return_obj = null;
+        Timer timer = new Timer();
+        
+        if(params.length == 0)
+        {
+            default_params = new Random_Numbers(repeats * 2);
+            default_params.default_ini();
+            default_params.shuffle();
+        }
+        
+        timer.start();
+        
+        for(int i = 0;i < repeats;i ++)
+        {
+            try
+            {
+                if(default_params == null)
+                {
+                    return_obj = method.invoke(data_struct, params);
+                }
+                else
+                {
+                    
+                    return_obj = method.invoke(data_struct, this.get_default_params(method.getName(), default_params, i));
+                }
+            }
+            catch(Exception e)
+            {
+                this.print_error("Error in execution!");
+                return;
+            }
+        }
+        
+        long time = timer.reset();
+        String return_obj_string = "void";
+        if(return_obj != null)
+        {
+            return_obj_string = return_obj.toString();
+        }
+        
+        this.print_result("\tlast return: " + return_obj_string + "\n\t" + "time consumption: " + Long.toString(time) + " milliseconds");
+    }
+    
+    private Object[] get_default_params(String method, Random_Numbers random, int lap_counter)
+    {
+        int params_ammount = 0;
+        switch(method)
+        {
+            case "size":
+            case "min":
+            case "max":
+            case "clear":
+                params_ammount = 0;
+                break;
+            case "get":
+            case "contains_key":
+            case "contains":
+            case "remove":
+            case "predecessor":
+            case "successor":
+                params_ammount = 1;
+                break;
+            case "add":
+                params_ammount = 2;
+                break;
+        }
+        Object params[] = new Object[params_ammount];
+        for(int i = 0;i < params.length;i ++)
+        {
+            params[i] = random.get_number(lap_counter + i);
+        }
+        return params;
     }
 }

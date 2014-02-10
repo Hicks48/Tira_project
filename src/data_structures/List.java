@@ -284,13 +284,40 @@ public class List<Type> implements Set<Integer,Type>, Iterator<Type> {
     
     /**
      * Adds given object to the start of the list.
-     * Works in time O(1).
-     * @param key Is not used in the list!
+     * Works in time O(n).
+     * @param key Index that node is added. If 1 or smaller
+     * node is added to first in the list and if bigger than
+     * lists size node is added to the end of the list.
      * @param value Value that is stored in the list.
      */
     @Override
     public void add(Integer key, Type value) {
-        this.add_front((Type)value);
+        if(key >= this.size)
+        {
+            this.add_behind(value);
+            return;
+        }
+        else if(key <= 1)
+        {
+            this.add_front(value);
+            return;
+        }
+        
+        List_Node<Type> node  = new List_Node(value);
+        this.size ++;
+        List_Node<Type> counter = this.first;
+        for(int i = 0;i < key;i ++)
+        {
+            counter = counter.prev;
+        }
+        List_Node<Type> before = counter;
+        List_Node<Type> after = counter.prev;
+        
+        node.next = before;
+        node.prev = after;
+        
+        before.prev = node;
+        after.next = node;
     }
     
     /**
@@ -578,6 +605,10 @@ public class List<Type> implements Set<Integer,Type>, Iterator<Type> {
     
     private void remove_node(List_Node<Type> node)
     {
+        if(node == null)
+        {
+            return;
+        }
         if(this.size == 1)
         {
             this.clear();

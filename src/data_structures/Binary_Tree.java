@@ -126,7 +126,7 @@ implements Set<Key_Type,Value_Type>, data_structures.Iterator<Key_Type> {
             {
                 child = node.right_child;
             }
-            parent = child.parent;
+            parent = node.parent;
             child.parent = parent;
             
             if(parent == null)
@@ -157,7 +157,7 @@ implements Set<Key_Type,Value_Type>, data_structures.Iterator<Key_Type> {
             Binary_Tree_Node<Key_Type,Value_Type> child = next.right_child;
             Binary_Tree_Node<Key_Type,Value_Type> parent = next.parent;
             
-            if(parent.left_child.equals(next))
+            if(parent.left_child == next)
             {
                 parent.left_child = child;
             }
@@ -171,6 +171,12 @@ implements Set<Key_Type,Value_Type>, data_structures.Iterator<Key_Type> {
                 child.parent = parent;
             }
         }
+    }
+    
+    public String prerder()
+    {
+        String order = new String();
+        return this.preorder(order,this.root) + " ";
     }
     
     /**
@@ -250,6 +256,10 @@ implements Set<Key_Type,Value_Type>, data_structures.Iterator<Key_Type> {
     public Value_Type succ(Key_Type key)
     {
         Binary_Tree_Node<Key_Type,Value_Type> node = this.get_node(key);
+        if(node == null)
+        {
+            return null;
+        }
         if(node.right_child != null)
         {
             return this.min(node.right_child).data;
@@ -271,6 +281,10 @@ implements Set<Key_Type,Value_Type>, data_structures.Iterator<Key_Type> {
     public Key_Type succ_key(Key_Type key)
     {
         Binary_Tree_Node<Key_Type,Value_Type> node = this.get_node(key);
+        if(node == null)
+        {
+            return null;
+        }
         if(node.right_child != null)
         {
             return this.min(node.right_child).key;
@@ -282,54 +296,82 @@ implements Set<Key_Type,Value_Type>, data_structures.Iterator<Key_Type> {
             node = parent;
             parent = node.parent;
         }
+        if(parent == null)
+        {
+            return null;
+        }
         return parent.key;
-    }
-    
-    public void preorder()
-    {
-        this.preorder(null, root);
     }
     
     // Testable Data Structure
     
     @Override
     public void add(Key_Type key, Value_Type value) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        this.tree_add(key, value);
     }
 
     @Override
     public void remove(Key_Type key) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        this.delete(key);
     }
 
     @Override
     public Value_Type predecessor(Key_Type key) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Binary_Tree_Node<Key_Type,Value_Type> node = this.get_node(key);
+        if(node == null)
+        {
+            return null;
+        }
+        if(node.left_child != null)
+        {
+            return this.max(node.left_child).data;
+        }
+        Binary_Tree_Node<Key_Type,Value_Type> parent = node.parent;
+        while(parent != null && node == parent.left_child)
+        {
+            node = parent;
+            parent = node.parent;
+        }
+        if(parent == null)
+        {
+            return null;
+        }
+        return parent.data;
     }
 
     @Override
     public Value_Type successor(Key_Type key) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return this.succ(key);
     }
 
     @Override
     public boolean contains_key(Key_Type key) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return this.preorder_as_list(new List<Key_Type>(),root).contains(key);
     }
 
     @Override
     public boolean contains(Value_Type value) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        List<Key_Type> list = this.preorder_as_list(new List<Key_Type>(),root);
+        list.itr_reset();
+        while(list.itr_has_next())
+        {
+            if(this.get(list.itr_get()).equals(value))
+            {
+                return true;
+            }
+            list.itr_next();
+        }
+        return false;
     }
 
     @Override
     public void clear() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        this.root = null;
     }
 
     @Override
     public int size() {
-        throw new UnsupportedOperationException("Not supported yet.");
+       return this.preorder_as_list(new List<Key_Type>(),root).size();
     }
     
     // Iterator
@@ -361,15 +403,34 @@ implements Set<Key_Type,Value_Type>, data_structures.Iterator<Key_Type> {
     
     // Private methods
     
-    private void preorder(String order,Binary_Tree_Node<Key_Type,Value_Type> node)
+    private List<Key_Type> preorder_as_list(List<Key_Type> list, Binary_Tree_Node<Key_Type,Value_Type> node)
     {
         if(node == null)
         {
-            return;
+            return list;
         }
-        this.preorder(order,node.left_child);
-        this.preorder(order,node.right_child);
-        System.out.print(" " + node.data);
+        else
+        {
+            list.add(0, node.key);
+        }
+        this.preorder_as_list(list,node.left_child);
+        this.preorder_as_list(list,node.right_child);
+        return list;
+    }
+    
+    private String preorder(String order, Binary_Tree_Node<Key_Type,Value_Type> node)
+    {
+        if(node == null)
+        {
+            return order;
+        }
+        else
+        {
+            order = order + " " + node.data.toString();
+        }
+        order = this.preorder(order,node.left_child);
+        order = this.preorder(order,node.right_child);
+        return order;
     }
     
     private Binary_Tree_Node<Key_Type,Value_Type> get_node(Key_Type key)
@@ -414,7 +475,7 @@ implements Set<Key_Type,Value_Type>, data_structures.Iterator<Key_Type> {
     
     private Binary_Tree_Node<Key_Type,Value_Type> max(Binary_Tree_Node<Key_Type,Value_Type> start)
     {
-        Binary_Tree_Node<Key_Type,Value_Type> node = this.root;
+        Binary_Tree_Node<Key_Type,Value_Type> node = start;
         while(node != null)
         {
             if(node.right_child == null)
@@ -425,5 +486,4 @@ implements Set<Key_Type,Value_Type>, data_structures.Iterator<Key_Type> {
         }
         return null;
     }
-    
 }

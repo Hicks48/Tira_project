@@ -31,12 +31,12 @@ implements Set<Key_Type,Value_Type>, Iterator<Key_Type> {
         
         if(contains != -1)
         {
-            this.keys.add_front(key);
             Hash_Map_Node<Key_Type,Value_Type> exists = overflow_list.get(contains);
             exists.value = value;
         }
         else
         {
+            this.keys.add_front(key);
             overflow_list.add_front(node);
         }
     }

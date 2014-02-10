@@ -1,7 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package data_structures_test;
 
 import data_structures.Hash_Map;
@@ -14,7 +11,7 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author henrikorpela
+ * @author Henrikorpela
  */
 public class Hash_Map_Test {
     public Hash_Map<String,String> map;
@@ -33,6 +30,11 @@ public class Hash_Map_Test {
     @Before
     public void setUp() {
         this.map = new Hash_Map(10);
+        this.map.put("1","1");
+        this.map.put("2","2");
+        this.map.put("3","3");
+        this.map.put("4","4");
+        this.map.put("Dwayne","Hicks");
     }
     
     @After
@@ -44,16 +46,35 @@ public class Hash_Map_Test {
      @Test
      public void get_and_put_test() 
      {
-         this.map.put("1","1");
-         this.map.put("2","2");
-         this.map.put("3","3");
-         this.map.put("4","4");
-         this.map.put("Dwayne","Hicks");
-         
          assertEquals(this.map.get("1"),"1");
          assertEquals(this.map.get("2"),"2");
          assertEquals(this.map.get("3"),"3");
          assertEquals(this.map.get("4"),"4");
          assertEquals(this.map.get("Dwayne"),"Hicks");
+     }
+     
+     @Test
+     public void remove_test()
+     {
+         this.map.remove("3");
+         this.map.remove("4");
+         
+         assertEquals(this.map.get("3"),null);
+         assertEquals(this.map.get("4"),null);
+         
+         assertEquals(this.map.get("1"),"1");
+         assertEquals(this.map.get("2"),"2");
+         assertEquals(this.map.get("Dwayne"),"Hicks");
+     }
+     
+     @Test
+     public void size_test()
+     {
+         assertEquals(this.map.size(),(int)5);
+         
+         this.map.remove("3");
+         this.map.remove("3");
+         
+         assertEquals(this.map.size(),(int)4);
      }
 }
