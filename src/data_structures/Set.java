@@ -25,59 +25,73 @@ public interface Set<Key_Type, Value_Type> {
     public void add(Key_Type key,Value_Type value);
     
     /**
-     * 
-     * @param key 
+     * Adds new node with given given key and
+     * value that is same as the key.
+     * Only works if key- and value types are the same.
+     * If key already exists in the set replaces old entry
+     * with new value.
+     * @param key Key that is added also determines value.
+     */
+    public void add_identical(Key_Type key);
+    
+    /**
+     * Removes node with given key from the set.
+     * If key is not found from the set does nothing.
+     * @param key Key to be removed.
      */
     public void remove(Key_Type key);
     
     /**
-     * 
-     * @param key
-     * @return 
+     * Return value of predecessor of node with given key.
+     * @param key Key which predecessors value is retrieved.
+     * * If key is not found return null.
+     * @return Value of predecessor.
      */
     public Value_Type predecessor(Key_Type key);
     
     /**
-     * 
-     * @param key
-     * @return 
+     * Return value of successor of node with given key.
+     * @param key Key which successor value is retrieved.
+     * If key is not found return null.
+     * @return Value of successor.
      */
     public Value_Type successor(Key_Type key);
     
     /**
-     * 
-     * @return 
+     * Return value of node that has smallest key in the set.
+     * @return value of node that has smallest key in the set.
      */
     public Value_Type min();
     
     /**
-     * 
-     * @return 
+     * Return value of node that has largest key in the set.
+     * @return value of node that has largest key in the set.
      */
     public Value_Type max();
     
     /**
-     * 
-     * @param key
-     * @return 
+     * Checks whether set contains node that has given key.
+     * @param key Key that is checked.
+     * @return True if set contains key and false if doesn't.
      */
     public boolean contains_key(Key_Type key);
     
     /**
-     * 
-     * @param value
-     * @return 
+     * Checks whether set contains node that has given value.
+     * @param value Value that is checked.
+     * @return True if set contains node with given value
+     * and false if doesn't.
      */
     public boolean contains(Value_Type value);
     
     /**
-     * 
+     * Sets root to null. This resets the set.
      */
     public void clear();
     
     /**
-     * 
-     * @return 
+     * Return size of the set.
+     * @return size of the set.
      */
     public int size();
 }

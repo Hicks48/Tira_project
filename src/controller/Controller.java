@@ -6,6 +6,7 @@ import data_structures.AVL_Tree;
 import data_structures.Binary_Tree;
 import data_structures.Hash_Map;
 import data_structures.List;
+import data_structures.Red_Black_Tree;
 import data_structures.Set;
 import java.lang.reflect.Method;
 import java.util.Scanner;
@@ -22,6 +23,9 @@ public class Controller {
     private Set[] set_structures;
     private Method methods[];
     
+    /**
+     * Creates new controller.
+     */
     public Controller()
     {
         this.game_on = true;
@@ -34,6 +38,9 @@ public class Controller {
         this.initialize_data_structure();
     }
     
+    /**
+     * Runs controller command line.
+     */
     public void run()
     {
         this.print_welcome_message();
@@ -90,11 +97,13 @@ public class Controller {
         
         Binary_Tree<Integer,Integer> binary_tree = new Binary_Tree(comparator);
         AVL_Tree<Integer,Integer> avl_tree = new AVL_Tree(comparator);
+        Red_Black_Tree<Integer,Integer> red_black_tree = new Red_Black_Tree(comparator);
         
         this.set_structures[0] = list;
         this.set_structures[1] = hash_map;
         this.set_structures[2] = binary_tree;
         this.set_structures[3] = avl_tree;
+        this.set_structures[4] = red_black_tree;
     }
     
     private void print_result(String result)
@@ -114,7 +123,7 @@ public class Controller {
                 return this.set_structures[2];
             case "AVL_Tree":
                 return this.set_structures[3];
-            case "Red_Blac_Tree":
+            case "Red_Black_Tree":
                 return this.set_structures[4];
         }
         this.print_error("Invalid data structure");
@@ -163,7 +172,6 @@ public class Controller {
         catch(Exception e)
         {
             this.print_error("Ivalid command!!!");
-            return;
         }
     }
     
@@ -225,7 +233,7 @@ public class Controller {
         
         if(params.length == 0)
         {
-            default_params = new Random_Numbers(repeats * 2);
+            default_params = new Random_Numbers(repeats);
             default_params.default_ini();
             default_params.shuffle();
         }
@@ -280,6 +288,7 @@ public class Controller {
             case "remove":
             case "predecessor":
             case "successor":
+            case "add_identical":
                 params_ammount = 1;
                 break;
             case "add":

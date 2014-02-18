@@ -16,6 +16,12 @@ public class AVL_Tree<Key_Type,Value_Type> implements Set<Key_Type,Value_Type> {
         this.comparator = comparator;
     }
     
+    public String prerder()
+    {
+        String order = new String();
+        return this.preorder(order,this.root) + " ";
+    }
+    
     @Override
     public Value_Type get(Key_Type key) {
         AVL_Tree_Node<Key_Type,Value_Type> node = this.get_node((Key_Type)key);
@@ -36,11 +42,11 @@ public class AVL_Tree<Key_Type,Value_Type> implements Set<Key_Type,Value_Type> {
         AVL_Tree_Node<Key_Type,Value_Type> p = new_node.parent;
         while(p != null)
         {
-            if(this.heigth(p.left_child) == this.heigth(p.right_child) + 2)
+            if(this.height(p.left_child) == this.height(p.right_child) + 2)
             {
                 AVL_Tree_Node<Key_Type,Value_Type> parent = p.parent;
                 AVL_Tree_Node<Key_Type,Value_Type> u_tree;
-                if(this.heigth(p.left_child.left_child) > this.heigth(p.left_child.right_child))
+                if(this.height(p.left_child.left_child) > this.height(p.left_child.right_child))
                 {
                     u_tree = this.rigth_rotate(p);
                 }
@@ -62,16 +68,16 @@ public class AVL_Tree<Key_Type,Value_Type> implements Set<Key_Type,Value_Type> {
                 }
                 if(parent != null)
                 {
-                    parent.heigth = this.max(this.heigth(parent.left_child),this.heigth(parent.right_child)) + 1;
+                    parent.heigth = this.max(this.height(parent.left_child),this.height(parent.right_child)) + 1;
                 }
                 return;
             }
             
-            if(this.heigth(p.right_child) == this.heigth(p.left_child) + 2)
+            if(this.height(p.right_child) == this.height(p.left_child) + 2)
             {
                 AVL_Tree_Node<Key_Type,Value_Type> parent = p.parent;
                 AVL_Tree_Node<Key_Type,Value_Type> u_tree;
-                if(this.heigth(p.right_child.right_child) > this.heigth(p.right_child.left_child))
+                if(this.height(p.right_child.right_child) > this.height(p.right_child.left_child))
                 {
                     u_tree = this.left_rotate(p);
                 }
@@ -93,16 +99,21 @@ public class AVL_Tree<Key_Type,Value_Type> implements Set<Key_Type,Value_Type> {
                 }
                 if(parent != null)
                 {
-                    parent.heigth = this.max(this.heigth(parent.left_child), this.heigth(parent.right_child)) + 1;
+                    parent.heigth = this.max(this.height(parent.left_child), this.height(parent.right_child)) + 1;
                 }
                 return;
             }
             
-            p.heigth = this.max(this.heigth(p.left_child), this.heigth(p.right_child)) + 1;
+            p.heigth = this.max(this.height(p.left_child), this.height(p.right_child)) + 1;
             p = p.parent;
         }
     }
-
+    
+    public int get_heigth()
+    {
+        return this.root.heigth;
+    }
+    
     @Override
     public void remove(Key_Type key) {
         AVL_Tree_Node<Key_Type,Value_Type> del = this.delete((Key_Type)key);
@@ -113,33 +124,24 @@ public class AVL_Tree<Key_Type,Value_Type> implements Set<Key_Type,Value_Type> {
         AVL_Tree_Node<Key_Type,Value_Type> p = del.parent;
         while(p != null)
         {
-            if(!this.balance(p))
+            if(this.height(p.left_child) == this.height(p.right_child) + 2)
             {
                 AVL_Tree_Node<Key_Type,Value_Type> parent = p.parent;
-                AVL_Tree_Node<Key_Type,Value_Type> u_tree = null;
-                if(p.left_child != null && !this.balance(p.left_child.left_child))
+                AVL_Tree_Node<Key_Type,Value_Type> u_tree;
+                if(this.height(p.left_child.left_child) > this.height(p.left_child.right_child))
                 {
                     u_tree = this.rigth_rotate(p);
                 }
-                else if(p.right_child != null && !this.balance(p.right_child.right_child))
-                {
-                    u_tree = this.left_rotate(p);
-                }
-                else if(p.left_child != null && !this.balance(p.left_child.right_child))
+                else
                 {
                     u_tree = this.left_rigth_rotate(p);
                 }
-                else if(p.right_child != null && !this.balance(p.right_child.left_child))
-                {
-                    u_tree = this.rigth_left_rotate(p);
-                }
-                
-                if(p == this.root)
+                if(parent == null)
                 {
                     this.root = u_tree;
                     return;
                 }
-                if(parent.left_child == p)
+                else if(parent.left_child == p)
                 {
                     parent.left_child = u_tree;
                 }
@@ -147,16 +149,53 @@ public class AVL_Tree<Key_Type,Value_Type> implements Set<Key_Type,Value_Type> {
                 {
                     parent.right_child = u_tree;
                 }
+                if(parent != null)
+                {
+                    parent.heigth = this.max(this.height(parent.left_child),this.height(parent.right_child)) + 1;
+                }
+                p = parent;
+            }
+            
+            else if(this.height(p.right_child) == this.height(p.left_child) + 2)
+            {
+                AVL_Tree_Node<Key_Type,Value_Type> parent = p.parent;
+                AVL_Tree_Node<Key_Type,Value_Type> u_tree;
+                if(this.height(p.right_child.right_child) > this.height(p.right_child.left_child))
+                {
+                    u_tree = this.left_rotate(p);
+                }
+                else
+                {
+                    u_tree = this.rigth_left_rotate(p);
+                }
+                if(parent == null)
+                {
+                    this.root = u_tree;
+                    return;
+                }
+                else if(parent.left_child == p)
+                {
+                    parent.left_child = u_tree;
+                }
+                else
+                {
+                    parent.right_child = u_tree;
+                }
+                if(parent != null)
+                {
+                    parent.heigth = this.max(this.height(parent.left_child), this.height(parent.right_child)) + 1;
+                }
                 p = parent;
             }
             
             else
             {
-                p.heigth = this.max(this.heigth(p.left_child), this.heigth(p.right_child)) + 1;
+                p.heigth = this.max(this.height(p.left_child), this.height(p.right_child)) + 1;
                 p = p.parent;
             }
         }
     }
+
 
     @Override
     public boolean contains_key(Key_Type key) {
@@ -248,8 +287,8 @@ public class AVL_Tree<Key_Type,Value_Type> implements Set<Key_Type,Value_Type> {
         {
             node.right_child.parent = node;
         }
-        node.heigth = this.max(this.heigth(node.left_child), this.heigth(node.right_child)) + 1;
-        node_2.heigth = this.max(this.heigth(node_2.left_child), this.heigth(node_2.right_child)) + 1;
+        node.heigth = this.max(this.height(node.left_child), this.height(node.right_child)) + 1;
+        node_2.heigth = this.max(this.height(node_2.left_child), this.height(node_2.right_child)) + 1;
         return node_2;
     }
     
@@ -264,8 +303,8 @@ public class AVL_Tree<Key_Type,Value_Type> implements Set<Key_Type,Value_Type> {
         {
             node.left_child.parent = node;
         }
-        node.heigth = this.max(this.heigth(node.left_child), this.heigth(node.right_child)) + 1;
-        node_2.heigth = this.max(this.heigth(node_2.left_child), this.heigth(node_2.right_child)) + 1;
+        node.heigth = this.max(this.height(node.left_child), this.height(node.right_child)) + 1;
+        node_2.heigth = this.max(this.height(node_2.left_child), this.height(node_2.right_child)) + 1;
         return node_2;
     }
     
@@ -281,7 +320,7 @@ public class AVL_Tree<Key_Type,Value_Type> implements Set<Key_Type,Value_Type> {
         }
     }
     
-    private int heigth(AVL_Tree_Node<Key_Type,Value_Type> node)
+    private int height(AVL_Tree_Node<Key_Type,Value_Type> node)
     {
         if(node == null)
         {
@@ -289,6 +328,7 @@ public class AVL_Tree<Key_Type,Value_Type> implements Set<Key_Type,Value_Type> {
         }
         return node.heigth;
     }
+
     
     private AVL_Tree_Node<Key_Type,Value_Type> insert(Key_Type key, Value_Type value)
     {
@@ -339,7 +379,7 @@ public class AVL_Tree<Key_Type,Value_Type> implements Set<Key_Type,Value_Type> {
     private AVL_Tree_Node<Key_Type,Value_Type> delete(Key_Type key)
     {
         AVL_Tree_Node<Key_Type,Value_Type> node = this.get_node(key);
-        
+        AVL_Tree_Node<Key_Type,Value_Type> return_this = node;
         // Tree doesn't contain node with given key
         if(node == null)
         {
@@ -353,7 +393,7 @@ public class AVL_Tree<Key_Type,Value_Type> implements Set<Key_Type,Value_Type> {
             if(parent == null)
             {
                 this.root = null;
-                return null;
+                return return_this;
             }
             if(node.equals(parent.left_child))
             {
@@ -363,7 +403,6 @@ public class AVL_Tree<Key_Type,Value_Type> implements Set<Key_Type,Value_Type> {
             {
                 parent.right_child = null;
             }
-            return node;
         }
         
         // Node has one child
@@ -371,7 +410,7 @@ public class AVL_Tree<Key_Type,Value_Type> implements Set<Key_Type,Value_Type> {
         {
             AVL_Tree_Node<Key_Type,Value_Type> child;
             AVL_Tree_Node<Key_Type,Value_Type> parent;
-            if(node.left_child != null)
+            if(node. left_child != null)
             {
                 child = node.left_child;
             }
@@ -386,6 +425,7 @@ public class AVL_Tree<Key_Type,Value_Type> implements Set<Key_Type,Value_Type> {
             if(parent == null)
             {
                 this.root = child;
+                return return_this;
             }
             
             if(node.equals(parent.left_child))
@@ -403,7 +443,7 @@ public class AVL_Tree<Key_Type,Value_Type> implements Set<Key_Type,Value_Type> {
         // Node has two childs
         else if(node.right_child != null && node.left_child != null)
         {
-            AVL_Tree_Node<Key_Type,Value_Type> next = this.min(node.right_child);
+            AVL_Tree_Node<Key_Type,Value_Type> next = this.max(node.left_child);
             // Copy nexts data to node
             node.key = next.key;
             node.data = next.data;
@@ -411,7 +451,7 @@ public class AVL_Tree<Key_Type,Value_Type> implements Set<Key_Type,Value_Type> {
             AVL_Tree_Node<Key_Type,Value_Type> child = next.right_child;
             AVL_Tree_Node<Key_Type,Value_Type> parent = next.parent;
             
-            if(parent.left_child.equals(next))
+            if(parent.left_child == next)
             {
                 parent.left_child = child;
             }
@@ -424,21 +464,9 @@ public class AVL_Tree<Key_Type,Value_Type> implements Set<Key_Type,Value_Type> {
             {
                 child.parent = parent;
             }
+            return next;
         }
-        return node;
-    }
-    
-    private boolean balance(AVL_Tree_Node<Key_Type,Value_Type> node)
-    {
-        if(node == null)
-        {
-            return true;
-        }
-        if(this.abs(this.heigth(node.left_child) - this.heigth(node.right_child)) < 2)
-        {
-            return true;
-        }
-        return false;
+        return return_this;
     }
     
     private int abs(int a)
@@ -483,7 +511,7 @@ public class AVL_Tree<Key_Type,Value_Type> implements Set<Key_Type,Value_Type> {
     
     private AVL_Tree_Node<Key_Type,Value_Type> max(AVL_Tree_Node<Key_Type,Value_Type> start)
     {
-        AVL_Tree_Node<Key_Type,Value_Type> node = this.root;
+        AVL_Tree_Node<Key_Type,Value_Type> node = start;
         while(node != null)
         {
             if(node.right_child == null)
@@ -536,4 +564,22 @@ public class AVL_Tree<Key_Type,Value_Type> implements Set<Key_Type,Value_Type> {
         return list;
     }
 
+    private String preorder(String order, AVL_Tree_Node<Key_Type, Value_Type> node) {
+        if(node == null)
+        {
+            return order;
+        }
+        else
+        {
+            order = order + " " + node.data.toString();
+        }
+        order = this.preorder(order,node.left_child);
+        order = this.preorder(order,node.right_child);
+        return order;
+    }
+
+    @Override
+    public void add_identical(Key_Type key) {
+        this.add(key,(Value_Type)key);
+    }
 }

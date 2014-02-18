@@ -486,4 +486,9 @@ implements Set<Key_Type,Value_Type>, data_structures.Iterator<Key_Type> {
         }
         return null;
     }
+
+    @Override
+    public void add_identical(Key_Type key) {
+        this.add(key,(Value_Type)key);
+    }
 }

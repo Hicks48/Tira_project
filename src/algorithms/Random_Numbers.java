@@ -4,7 +4,7 @@ package algorithms;
 import java.util.Random;
 
 /**
- *
+ * 
  * @author Henri Korpela
  */
 public class Random_Numbers {
@@ -29,6 +29,10 @@ public class Random_Numbers {
      
      public int get_number(int index)
      {
+         if(index > this.numbers.length - 1)
+         {
+             return this.numbers[index - this.numbers.length];
+         }
          return this.numbers[index];
      }
      

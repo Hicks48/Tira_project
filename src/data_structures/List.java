@@ -292,7 +292,7 @@ public class List<Type> implements Set<Integer,Type>, Iterator<Type> {
      */
     @Override
     public void add(Integer key, Type value) {
-        if(key >= this.size)
+        if(key >= this.size - 1)
         {
             this.add_behind(value);
             return;
@@ -318,6 +318,17 @@ public class List<Type> implements Set<Integer,Type>, Iterator<Type> {
         
         before.prev = node;
         after.next = node;
+    }
+    
+    /**
+     * Adds new node with given given key and
+     * value that is same as the key.
+     * Only works if key- and value types are the same.
+     * @param key Key that is added also determines value.
+     */
+    @Override
+    public void add_identical(Integer key) {
+        this.add(key, (Type)key);
     }
     
     /**
@@ -574,8 +585,9 @@ public class List<Type> implements Set<Integer,Type>, Iterator<Type> {
     }
     
     /**
-     * Return data of node where 
-     * @return 
+     * Return data of node where iterator currently is
+     * but doesn't move to the next node.
+     * @return Data in iterators current node.
      */
     @Override
     public Type itr_get()

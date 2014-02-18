@@ -225,4 +225,15 @@ public class List_Test {
          assertEquals(this.list.contains(0),false);
          assertEquals(this.list.contains(9),false);
      }
+     
+     @Test
+     public void invalid_remove_test()
+     {
+         int size = this.list.size();
+         
+         this.list.remove(Integer.MAX_VALUE);
+         this.list.remove(Integer.MIN_VALUE);
+         
+         assertEquals((int)this.list.size(),(int)size);
+     }
 }
