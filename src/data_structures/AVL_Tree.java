@@ -4,24 +4,51 @@ package data_structures;
 import java.util.Comparator;
 
 /**
- *
+ * AVL Tree data structure. AVL Tree implements Set interface.
+ * All values in AVL Tree are stored with key and value like in a map.
+ * User must provide a comparator for key types.
  * @author Henri Korpela
  */
 public class AVL_Tree<Key_Type,Value_Type> implements Set<Key_Type,Value_Type> {
+    /**
+     * Root of the tree.
+     */
     private AVL_Tree_Node<Key_Type,Value_Type> root;
+    
+    /**
+     * Comparator that compares keys.
+     */
     private Comparator<Key_Type> comparator;
     
+    /**
+     * Creates new tree that uses given comparator to compare keys.
+     * @param comparator Comparator that is used to compare keys.
+     */
     public AVL_Tree(Comparator<Key_Type> comparator)
     {
         this.comparator = comparator;
     }
     
+    /**
+     * Return string presentation of the tree.
+     * Presentation is all keys in the tree in pre-order.
+     * Nodes are separated with spaces. String also starts
+     * and ends in space.
+     * @return string presentation of the tree.
+     */
     public String prerder()
     {
         String order = new String();
         return this.preorder(order,this.root) + " ";
     }
     
+    /**
+     * Returns value that 
+     * corresponds to given key.
+     * @param key Key which value is retrieved.
+     * @return Value that corresponds given key.
+     * Null if key is not found.
+     */
     @Override
     public Value_Type get(Key_Type key) {
         AVL_Tree_Node<Key_Type,Value_Type> node = this.get_node((Key_Type)key);
@@ -31,7 +58,13 @@ public class AVL_Tree<Key_Type,Value_Type> implements Set<Key_Type,Value_Type> {
         }
         return node.data;
     }
-
+    
+    /**
+     * Adds new node to data structure
+     * with given key and value.
+     * @param key Key for new node.
+     * @param value Value for new node.
+     */
     @Override
     public void add(Key_Type key, Value_Type value) {
         AVL_Tree_Node<Key_Type,Value_Type> new_node = this.insert(key, value);
@@ -109,11 +142,33 @@ public class AVL_Tree<Key_Type,Value_Type> implements Set<Key_Type,Value_Type> {
         }
     }
     
+    /**
+     * Adds new node with given given key and
+     * value that is same as the key.
+     * Only works if key- and value types are the same.
+     * If key already exists in the set replaces old entry
+     * with new value.
+     * @param key Key that is added also determines value.
+     */
+    @Override
+    public void add_identical(Key_Type key) {
+        this.add(key,(Value_Type)key);
+    }
+    
+    /**
+     * Return height of the tree.
+     * @return height of the tree.
+     */
     public int get_heigth()
     {
         return this.root.heigth;
     }
     
+    /**
+     * Removes node with given key from the tree.
+     * If key is not found from the tree does nothing.
+     * @param key Key to be removed.
+     */
     @Override
     public void remove(Key_Type key) {
         AVL_Tree_Node<Key_Type,Value_Type> del = this.delete((Key_Type)key);
@@ -195,13 +250,23 @@ public class AVL_Tree<Key_Type,Value_Type> implements Set<Key_Type,Value_Type> {
             }
         }
     }
-
-
+    
+    /**
+     * Checks whether tree contains node that has given key.
+     * @param key Key that is checked.
+     * @return True if tree contains key and false if doesn't.
+     */
     @Override
     public boolean contains_key(Key_Type key) {
-        return this.preorder_as_list(new List<Key_Type>(), this.root).contains(key);
+        return (this.get(key) != null);
     }
-
+    
+    /**
+     * Checks whether tree contains node that has given value.
+     * @param value Value that is checked.
+     * @return True if tree contains node with given value
+     * and false if doesn't.
+     */
     @Override
     public boolean contains(Value_Type value) {
         List<Key_Type> list = this.preorder_as_list(new List<Key_Type>(), this.root);
@@ -216,23 +281,60 @@ public class AVL_Tree<Key_Type,Value_Type> implements Set<Key_Type,Value_Type> {
         }
         return false;
     }
-
+    
+    /**
+     * Sets root to null. This resets the set.
+     */
     @Override
     public void clear() {
         this.root = null;
     }
-
+    
+    /**
+     * Return size of the set.
+     * @return size of the set.
+     */
     @Override
     public int size() {
         return this.preorder_as_list(new List<Key_Type>(), this.root).size();
     }
     
-    
+    /**
+     * Return value of predecessor of node with given key.
+     * @param key Key which predecessors value is retrieved.
+     * * If key is not found return null.
+     * @return Value of predecessor.
+     */
     @Override
     public Value_Type predecessor(Key_Type key) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        AVL_Tree_Node<Key_Type,Value_Type> node = this.get_node(key);
+        if(node == null)
+        {
+            return null;
+        }
+        if(node.left_child != null)
+        {
+            return this.max(node.left_child).data;
+        }
+        AVL_Tree_Node<Key_Type,Value_Type> parent = node.parent;
+        while(parent != null && node == parent.left_child)
+        {
+            node = parent;
+            parent = node.parent;
+        }
+        if(parent == null)
+        {
+            return null;
+        }
+        return parent.data;
     }
-
+    
+    /**
+     * Return value of successor of node with given key.
+     * @param key Key which successor value is retrieved.
+     * If key is not found return null.
+     * @return Value of successor.
+     */
     @Override
     public Value_Type successor(Key_Type key) {
         AVL_Tree_Node<Key_Type,Value_Type> node = this.get_node(key);
@@ -253,7 +355,11 @@ public class AVL_Tree<Key_Type,Value_Type> implements Set<Key_Type,Value_Type> {
         }
         return parent.data;
     }
-
+    
+    /**
+     * Return value of node that has smallest key in the set.
+     * @return value of node that has smallest key in the set.
+     */
     @Override
     public Value_Type min() {
         AVL_Tree_Node<Key_Type,Value_Type> min = this.min(this.root);
@@ -263,10 +369,14 @@ public class AVL_Tree<Key_Type,Value_Type> implements Set<Key_Type,Value_Type> {
         }
         return min.data;
     }
-
+    
+    /**
+     * Return value of node that has largest key in the set.
+     * @return value of node that has largest key in the set.
+     */
     @Override
     public Value_Type max() {
-        AVL_Tree_Node<Key_Type,Value_Type> max = this.min(this.root);
+        AVL_Tree_Node<Key_Type,Value_Type> max = this.max(this.root);
         if(max == null)
         {
             return null;
@@ -577,9 +687,6 @@ public class AVL_Tree<Key_Type,Value_Type> implements Set<Key_Type,Value_Type> {
         order = this.preorder(order,node.right_child);
         return order;
     }
-
-    @Override
-    public void add_identical(Key_Type key) {
-        this.add(key,(Value_Type)key);
-    }
+    
+    
 }

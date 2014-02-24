@@ -6,7 +6,7 @@ import java.util.Comparator;
 /**
  * Red Black Tree data structure. Red Black Tree implements Set interface.
  * All values in Red Black Tree are stored with key and value like in a map.
- * User must provide a comparator for key types. 
+ * User must provide a comparator for key types.
  * @author Henri Korpela
  */
 public class Red_Black_Tree<Key_Type, Value_Type> implements Set<Key_Type,Value_Type> {
@@ -126,7 +126,7 @@ public class Red_Black_Tree<Key_Type, Value_Type> implements Set<Key_Type,Value_
         root.color = Red_Black.BLACK;
     }
 
-    private Red_Black_Tree_Node insert(Red_Black_Tree_Node<Key_Type,Value_Type> node, Key_Type key, Value_Type value) 
+    private Red_Black_Tree_Node<Key_Type,Value_Type> insert(Red_Black_Tree_Node<Key_Type,Value_Type> node, Key_Type key, Value_Type value) 
     { 
         if (node == null) 
         {
@@ -164,7 +164,7 @@ public class Red_Black_Tree<Key_Type, Value_Type> implements Set<Key_Type,Value_
         return node;
     }
     
-    private Red_Black_Tree_Node delete_min(Red_Black_Tree_Node<Key_Type,Value_Type> node) 
+    private Red_Black_Tree_Node<Key_Type,Value_Type> delete_min(Red_Black_Tree_Node<Key_Type,Value_Type> node) 
     { 
         if (node.left == null) 
         {
@@ -206,7 +206,7 @@ public class Red_Black_Tree<Key_Type, Value_Type> implements Set<Key_Type,Value_
         }
     }
 
-    private Red_Black_Tree_Node delete(Red_Black_Tree_Node<Key_Type,Value_Type> node, Key_Type key) 
+    private Red_Black_Tree_Node<Key_Type,Value_Type> delete(Red_Black_Tree_Node<Key_Type,Value_Type> node, Key_Type key) 
     { 
         if (this.comparator.compare(key, node.key) < 0)  
         {
@@ -245,7 +245,7 @@ public class Red_Black_Tree<Key_Type, Value_Type> implements Set<Key_Type,Value_
         return balance(node);
     }
     
-    private Red_Black_Tree_Node rigth_rotate(Red_Black_Tree_Node node) 
+    private Red_Black_Tree_Node<Key_Type,Value_Type> rigth_rotate(Red_Black_Tree_Node node) 
     {
         Red_Black_Tree_Node n2 = node.left;
         node.left = n2.rigth;
@@ -257,7 +257,7 @@ public class Red_Black_Tree<Key_Type, Value_Type> implements Set<Key_Type,Value_
         return n2;
     }
 
-    private Red_Black_Tree_Node left_rotate(Red_Black_Tree_Node node) 
+    private Red_Black_Tree_Node<Key_Type,Value_Type> left_rotate(Red_Black_Tree_Node node) 
     {
         Red_Black_Tree_Node n2 = node.rigth;
         node.rigth = n2.left;
@@ -276,7 +276,7 @@ public class Red_Black_Tree<Key_Type, Value_Type> implements Set<Key_Type,Value_
         Red_Black_Tree_Node.change_color(h.rigth);
     }
 
-    private Red_Black_Tree_Node shift_red_left(Red_Black_Tree_Node node) 
+    private Red_Black_Tree_Node<Key_Type,Value_Type> shift_red_left(Red_Black_Tree_Node node) 
     {
         color_change(node);
         if (Red_Black_Tree_Node.is_red(node.rigth.left)) { 
@@ -286,7 +286,7 @@ public class Red_Black_Tree<Key_Type, Value_Type> implements Set<Key_Type,Value_
         return node;
     }
 
-    private Red_Black_Tree_Node shift_red_right(Red_Black_Tree_Node node) 
+    private Red_Black_Tree_Node<Key_Type,Value_Type> shift_red_right(Red_Black_Tree_Node node) 
     {
         color_change(node);
         if (Red_Black_Tree_Node.is_red(node.left.left)) 
@@ -296,7 +296,7 @@ public class Red_Black_Tree<Key_Type, Value_Type> implements Set<Key_Type,Value_
         return node;
     }
 
-    private Red_Black_Tree_Node balance(Red_Black_Tree_Node node) 
+    private Red_Black_Tree_Node<Key_Type,Value_Type> balance(Red_Black_Tree_Node node) 
     {
         if (Red_Black_Tree_Node.is_red(node.rigth)) 
         {
@@ -315,16 +315,18 @@ public class Red_Black_Tree<Key_Type, Value_Type> implements Set<Key_Type,Value_
         return node;
     }
     
-    private Red_Black_Tree_Node min(Red_Black_Tree_Node node) 
-    { 
-        if (node.left == null) 
+    private Red_Black_Tree_Node<Key_Type,Value_Type> min(Red_Black_Tree_Node start) 
+    {
+        Red_Black_Tree_Node<Key_Type,Value_Type> node = start;
+        while(node != null)
         {
-            return node;
-        } 
-        else 
-        {
-            return min(node.left);
-        } 
+            if(node.left == null)
+            {
+                return node;
+            }
+            node = node.left;
+        }
+        return null;
     }
     
     /**
@@ -362,7 +364,17 @@ public class Red_Black_Tree<Key_Type, Value_Type> implements Set<Key_Type,Value_
      */
     @Override
     public Value_Type predecessor(Key_Type key) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        List<Key_Type> list = this.preorder_as_list(new List<Key_Type>(), root);
+        list.set_comparator(this.comparator);
+        int index = list.index_of(key);
+        if(index == -1)
+        {
+            return null;
+        }
+        else
+        {
+            return this.get(list.predecessor(index));
+        }
     }
     
     /**
@@ -373,7 +385,17 @@ public class Red_Black_Tree<Key_Type, Value_Type> implements Set<Key_Type,Value_
      */
     @Override
     public Value_Type successor(Key_Type key) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        List<Key_Type> list = this.preorder_as_list(new List<Key_Type>(), root);
+        list.set_comparator(this.comparator);
+        int index = list.index_of(key);
+        if(index == -1)
+        {
+            return null;
+        }
+        else
+        {
+            return this.get(list.successor(index));
+        }
     }
     
      /**
@@ -382,7 +404,7 @@ public class Red_Black_Tree<Key_Type, Value_Type> implements Set<Key_Type,Value_
      */
     @Override
     public Value_Type min() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return this.min(this.root).value;
     }
     
     /**
@@ -391,7 +413,27 @@ public class Red_Black_Tree<Key_Type, Value_Type> implements Set<Key_Type,Value_
      */
     @Override
     public Value_Type max() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Red_Black_Tree_Node<Key_Type,Value_Type> node = this.root;
+        
+        while(node != null)
+        {
+            if(node.rigth != null)
+            {
+                node = node.rigth;
+            }
+            else
+            {
+                break;
+            }
+        }
+        if(node == null)
+        {
+            return null;
+        }
+        else
+        {
+            return node.value;
+        }
     }
     
     /**
@@ -402,7 +444,17 @@ public class Red_Black_Tree<Key_Type, Value_Type> implements Set<Key_Type,Value_
      */
     @Override
     public boolean contains(Value_Type value) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        List<Key_Type> list = this.preorder_as_list(new List<Key_Type>(),root);
+        list.itr_reset();
+        while(list.itr_has_next())
+        {
+            if(this.get(list.itr_get()).equals(value))
+            {
+                return true;
+            }
+            list.itr_next();
+        }
+        return false;
     }
     
     /**
@@ -417,5 +469,45 @@ public class Red_Black_Tree<Key_Type, Value_Type> implements Set<Key_Type,Value_
     public void add_identical(Key_Type key) {
         this.add(key, (Value_Type)key);
     }
-
+    
+    private Red_Black_Tree_Node<Key_Type, Value_Type> get_node(Key_Type key)
+    {
+        Red_Black_Tree_Node<Key_Type, Value_Type> node = this.root;
+        while(node != null)
+        {
+            int compare = this.comparator.compare(key,node.key);
+            if(compare == 0)
+            {
+                return node;
+            }
+            
+            if(compare < 0)
+            {
+                node = node.left;
+                continue;
+            }
+            
+            if(compare > 0)
+            {
+                node = node.rigth;
+                continue;
+            }
+        }
+        return null;
+    }
+    
+    private List<Key_Type> preorder_as_list(List<Key_Type> list, Red_Black_Tree_Node<Key_Type, Value_Type> node)
+    {
+        if(node == null)
+        {
+            return list;
+        }
+        else
+        {
+            list.add(0, node.key);
+        }
+        this.preorder_as_list(list,node.left);
+        this.preorder_as_list(list,node.rigth);
+        return list;
+    }
 }

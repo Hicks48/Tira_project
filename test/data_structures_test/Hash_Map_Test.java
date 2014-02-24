@@ -2,6 +2,7 @@
 package data_structures_test;
 
 import data_structures.Hash_Map;
+import java.util.Random;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -66,6 +67,8 @@ public class Hash_Map_Test {
          assertEquals(this.map.get("2"),"2");
          assertEquals(this.map.get("Dwayne"),"Hicks");
      }
+     
+    
      
      @Test
      public void size_test()

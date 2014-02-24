@@ -149,7 +149,14 @@ public class AVL_Tree_Test {
      @Test
      public void min_and_max_test()
      {
+         assertEquals((int)this.tree.min(),(int)1);
+         assertEquals((int)this.tree.max(),(int)14);
          
+         this.tree.remove(1);
+         this.tree.remove(14);
+         
+         assertEquals((int)this.tree.min(),(int)2);
+         assertEquals((int)this.tree.max(),(int)12);
      }
      
      @Test
@@ -219,6 +226,6 @@ public class AVL_Tree_Test {
          
          this.tree.remove(80);
          
-         assertEquals(this.tree.prerder()," 18 3 2 1 9 4 12 11 47 22 20 33 29 137 56 123 180 ");
+         assertEquals(this.tree.prerder()," 18 3 2 1 9 4 12 11 47 22 20 33 29 123 56 137 180 ");
      }
 }

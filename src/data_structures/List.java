@@ -361,31 +361,24 @@ public class List<Type> implements Set<Integer,Type>, Iterator<Type> {
         }
         
         Type data = this.get(key);
-        Type predecessor = this.first.data;
-        int min_difference = Integer.MIN_VALUE;
+        int difference = Integer.MIN_VALUE;
+        Type pred = null;
         List_Node<Type> node = this.first;
         
         while(node != null)
         {
-            if(min_difference > 0)
+            int compare = this.comparator.compare(node.data, data);
+            
+            if(compare < 0 && compare > difference)
             {
-                min_difference = Integer.MIN_VALUE;
+                difference = compare;
+                pred = node.data;
             }
             
-            int compare = this.comparator.compare(node.data,data);
-            if(compare < 0 && compare > min_difference)
-            {
-                predecessor = node.data;
-                min_difference = compare;
-            }
             node = node.prev;
         }
         
-        if(this.comparator.compare(data,predecessor) <= 0)
-        {
-            return null;
-        }
-        return predecessor;
+        return pred;
     }
     
     /**
@@ -401,30 +394,24 @@ public class List<Type> implements Set<Integer,Type>, Iterator<Type> {
         }
         
         Type data = this.get(key);
-        Type successor = this.first.data;
-        int min_difference = Integer.MAX_VALUE;
+        int difference = Integer.MAX_VALUE;
+        Type succ = null;
         List_Node<Type> node = this.first;
         
         while(node != null)
         {
-            if(min_difference < 0)
+            int compare = this.comparator.compare(node.data, data);
+            
+            if(compare > 0 && compare < difference)
             {
-                min_difference = Integer.MAX_VALUE;
+                difference = compare;
+                succ = node.data;
             }
-            int compare = this.comparator.compare(node.data,data);
-            if(compare > 0 && compare < min_difference)
-            {
-                successor = node.data;
-                min_difference = compare;
-            }
+            
             node = node.prev;
         }
         
-        if(this.comparator.compare(data,successor) >= 0)
-        {
-            return null;
-        }
-        return successor;
+        return succ;
     }
     
     /**

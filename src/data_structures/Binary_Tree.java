@@ -8,15 +8,15 @@ import java.util.Comparator;
  * @author Henri Korpela
  */
 public class Binary_Tree<Key_Type,Value_Type> 
-implements Set<Key_Type,Value_Type>, data_structures.Iterator<Key_Type> {
+implements Set<Key_Type,Value_Type> {
     /**
      * Trees root node.
      */
-    protected Binary_Tree_Node<Key_Type,Value_Type> root;
+    private Binary_Tree_Node<Key_Type,Value_Type> root;
     /**
      * Comparator that compares keys.
      */
-    protected Comparator<Key_Type> comparator;
+    private Comparator<Key_Type> comparator;
     
     /**
      * Creates new binary search tree.
@@ -173,6 +173,13 @@ implements Set<Key_Type,Value_Type>, data_structures.Iterator<Key_Type> {
         }
     }
     
+    /**
+     * Return string presentation of the tree.
+     * Presentation is all keys in the tree in pre-order.
+     * Nodes are separated with spaces. String also starts
+     * and ends in space.
+     * @return string presentation of the tree.
+     */
     public String prerder()
     {
         String order = new String();
@@ -253,7 +260,7 @@ implements Set<Key_Type,Value_Type>, data_structures.Iterator<Key_Type> {
         return max.key;
     }
     
-    public Value_Type succ(Key_Type key)
+    private Value_Type succ(Key_Type key)
     {
         Binary_Tree_Node<Key_Type,Value_Type> node = this.get_node(key);
         if(node == null)
@@ -305,16 +312,33 @@ implements Set<Key_Type,Value_Type>, data_structures.Iterator<Key_Type> {
     
     // Testable Data Structure
     
+    /**
+     * Adds new node to data structure
+     * with given key and value.
+     * @param key Key for new node.
+     * @param value Value for new node.
+     */
     @Override
     public void add(Key_Type key, Value_Type value) {
         this.tree_add(key, value);
     }
-
+    
+    /**
+     * Removes node with given key from the set.
+     * If key is not found from the set does nothing.
+     * @param key Key to be removed.
+     */
     @Override
     public void remove(Key_Type key) {
         this.delete(key);
     }
-
+    
+    /**
+     * Return value of predecessor of node with given key.
+     * @param key Key which predecessors value is retrieved.
+     * * If key is not found return null.
+     * @return Value of predecessor.
+     */
     @Override
     public Value_Type predecessor(Key_Type key) {
         Binary_Tree_Node<Key_Type,Value_Type> node = this.get_node(key);
@@ -338,17 +362,34 @@ implements Set<Key_Type,Value_Type>, data_structures.Iterator<Key_Type> {
         }
         return parent.data;
     }
-
+    
+    /**
+     * Return value of successor of node with given key.
+     * @param key Key which successor value is retrieved.
+     * If key is not found return null.
+     * @return Value of successor.
+     */
     @Override
     public Value_Type successor(Key_Type key) {
         return this.succ(key);
     }
-
+    
+    /**
+     * Checks whether tree contains node that has given key.
+     * @param key Key that is checked.
+     * @return True if tree contains key and false if doesn't.
+     */
     @Override
     public boolean contains_key(Key_Type key) {
-        return this.preorder_as_list(new List<Key_Type>(),root).contains(key);
+        return (this.get(key) != null);
     }
-
+    
+    /**
+     * Checks whether set contains node that has given value.
+     * @param value Value that is checked.
+     * @return True if set contains node with given value
+     * and false if doesn't.
+     */
     @Override
     public boolean contains(Value_Type value) {
         List<Key_Type> list = this.preorder_as_list(new List<Key_Type>(),root);
@@ -363,42 +404,22 @@ implements Set<Key_Type,Value_Type>, data_structures.Iterator<Key_Type> {
         }
         return false;
     }
-
+    
+    /**
+     * Sets root to null. This resets the set.
+     */
     @Override
     public void clear() {
         this.root = null;
     }
-
+    
+    /**
+     * Return size of the set.
+     * @return size of the set.
+     */
     @Override
     public int size() {
        return this.preorder_as_list(new List<Key_Type>(),root).size();
-    }
-    
-    // Iterator
-    
-    @Override
-    public Key_Type itr_next() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void itr_remove() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public boolean itr_has_next() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void itr_reset() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public Key_Type itr_get() {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
     
     // Private methods
@@ -486,7 +507,15 @@ implements Set<Key_Type,Value_Type>, data_structures.Iterator<Key_Type> {
         }
         return null;
     }
-
+    
+    /**
+     * Adds new node with given given key and
+     * value that is same as the key.
+     * Only works if key- and value types are the same.
+     * If key already exists in the set replaces old entry
+     * with new value.
+     * @param key Key that is added also determines value.
+     */
     @Override
     public void add_identical(Key_Type key) {
         this.add(key,(Value_Type)key);

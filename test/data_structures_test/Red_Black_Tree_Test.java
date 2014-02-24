@@ -124,6 +124,13 @@ public class Red_Black_Tree_Test {
     }
     
     @Test
+    public void pred_succ_test()
+    {
+        assertEquals((int)this.tree.successor(4),(int)9);
+        assertEquals((int)this.tree.predecessor(4),(int)3);
+    }
+    
+    @Test
     public void big_ammounts_test()
     {
         int big_number = 10000;

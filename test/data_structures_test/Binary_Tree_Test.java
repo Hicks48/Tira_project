@@ -162,9 +162,9 @@ public class Binary_Tree_Test {
     @Test
     public void successor_test()
     {
-        assertEquals(this.tree.succ(3),"Five");
-        assertEquals(this.tree.succ(8),"Ten");
-        assertEquals(this.tree.succ(10),null);
+        assertEquals(this.tree.successor(3),"Five");
+        assertEquals(this.tree.successor(8),"Ten");
+        assertEquals(this.tree.successor(10),null);
         
         assertEquals((int)this.tree.succ_key(3),(int)5);
         assertEquals((int)this.tree.succ_key(8),(int)10);
@@ -173,9 +173,9 @@ public class Binary_Tree_Test {
         this.tree.remove(5);
         this.tree.remove(10);
         
-        assertEquals(this.tree.succ(3),"Six");
-        assertEquals(this.tree.succ(8),null);
-        assertEquals(this.tree.succ(10),null);
+        assertEquals(this.tree.successor(3),"Six");
+        assertEquals(this.tree.successor(8),null);
+        assertEquals(this.tree.successor(10),null);
     }
     
     @Test
